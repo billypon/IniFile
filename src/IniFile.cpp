@@ -383,11 +383,7 @@ IniFile::error_t IniFile::readLine(File &file, char *buffer, size_t len, uint32_
 	if (!file.seek(pos))
 		return errorSeekError;
 
-#if defined(ARDUINO_ARCH_ESP32) && !defined(PREFER_SDFAT_LIBRARY)
 	size_t bytesRead = file.readBytes(buffer, len);
-#else
-	size_t bytesRead = file.read(buffer, len);
-#endif
 	if (!bytesRead) {
 		buffer[0] = '\0';
 		//return 1; // done

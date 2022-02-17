@@ -3,12 +3,7 @@
 
 #include <stdint.h>
 
-#if defined(PREFER_SDFAT_LIBRARY)
-#include "SdFat.h"
-extern SdFat SD;
-#else
-#include "SD.h"
-#endif
+#include "LittleFS.h"
 #include "IPAddress.h"
 
 #define INIFILE_VERSION "1.3.0"
@@ -17,17 +12,13 @@ extern SdFat SD;
 // 8.3 filename instead and 8.3 directory with a leading slash
 #define INI_FILE_MAX_FILENAME_LEN 26
 
+#define FILE_READ "r"
+
 class IniFileState;
 
 class IniFile {
 public:
-#if defined(PREFER_SDFAT_LIBRARY)
-	typedef oflag_t mode_t;
-#elif defined(ARDUINO_ARCH_ESP32)
 	typedef const char* mode_t;
-#else
-	typedef uint8_t mode_t;
-#endif
 
 	enum error_t {
 		errorNoError = 0,
@@ -155,7 +146,7 @@ bool IniFile::open(void)
 {
 	if (_file)
 		_file.close();
-	_file = SD.open(_filename, _mode);
+	_file = LittleFS.open(_filename, _mode);
 	if (isOpen()) {
 		_error = errorNoError;
 		return true;
